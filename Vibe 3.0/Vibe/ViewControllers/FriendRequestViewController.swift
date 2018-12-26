@@ -103,8 +103,6 @@ class FriendRequestViewController: UIViewController, UITableViewDelegate, UITabl
         addFriendButton.clipsToBounds = true
         // Read request list
         FriendSystem.system.addRequestObserver {
-            print(FriendSystem.system.friendEmailRequestList)
-            print(FriendSystem.system.friendUsernameRequestList)
             print (FriendSystem.system.requestList.count)
             self.requestsTable.reloadData()
         }

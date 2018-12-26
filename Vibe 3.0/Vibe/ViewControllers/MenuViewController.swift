@@ -11,6 +11,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import Nuke
 
 class MenuViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -26,7 +27,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
             FriendSystem.system.CURRENT_USER_REF.child("vibeStatus").setValue(1)
             print("vibe on")
         }
-        // Turn off vibe
+            // Turn off vibe
         else{
             FriendSystem.system.CURRENT_USER_REF.child("vibeStatus").setValue(0)
             print("vibe off")
@@ -47,11 +48,14 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         // Load user data from firebase
         name.text = FriendsViewController.homeUser.nameDisplayed
         username.text = FriendsViewController.homeUser.usernameDisplayed
-        getProfileImage(photoURL: FriendsViewController.homeUser.photoURL)
+        let imageURL = URL(string: FriendsViewController.homeUser.photoURL)!
+        Nuke.loadImage(with: imageURL, into: profileImage)
+        let preheater = Nuke.ImagePreheater()
+        preheater.stopPreheating(with: [imageURL])
         // Round profile image
         profileImage.layer.cornerRadius = profileImage.frame.size.width/2
         profileImage.clipsToBounds = true
-    
+        
     }
     
     // Set the number of rows, based on the number of menu items
@@ -81,15 +85,6 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.performSegue(withIdentifier: menuItems[indexPath.row], sender: self)
         }
     }
-    
-    // Convert profile image url to UIimage
-    func getProfileImage(photoURL: String){
-        let URL = NSURL(string: photoURL)!
-        let imageData = NSData(contentsOf: URL as URL)!
-        profileImage.image = UIImage(data: imageData as Data)
-    }
-    
-    
     // Logout user
     func userLogout(){
         FriendSystem.system.logoutAccount()

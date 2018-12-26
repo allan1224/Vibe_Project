@@ -24,7 +24,7 @@ class RegisterTwoViewController: UIViewController, UITextFieldDelegate{
     @IBOutlet weak var phoneNumberTextField: UITextField!
     @IBOutlet weak var registerButton: UIButton!
     
-    // Store optional image
+    // Store image
     var selectedImage: UIImage?
     
     // Vibe Status
@@ -34,9 +34,9 @@ class RegisterTwoViewController: UIViewController, UITextFieldDelegate{
     // Register user when button is pressed
     @IBAction func registerButton(_ sender: Any) {
         print("register button pressed")
-        if let profilePhoto = self.selectedImage, let imageData = profilePhoto.jpegData(compressionQuality: 0.1){
+        
+        if let profilePhoto = self.selectedImage, let imageData = profilePhoto.jpegData(compressionQuality: 0.01){
             AuthService.signUp(name: name, username: usernameTextField.text!, email: email, password: password, phoneNumber: phoneNumberTextField.text!, vibeStatus: vibeStatus, imageData: imageData, onSuccess: {
-
                 // Initiate segue after registration is complete
                 self.performSegue(withIdentifier: "RegisterToPageCtl", sender: nil)
             }, onError: {(errorString) in
@@ -145,6 +145,8 @@ class RegisterTwoViewController: UIViewController, UITextFieldDelegate{
      }
      */
     
+    
+    
 }
 
 
@@ -158,6 +160,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         if let image = info["UIImagePickerControllerOriginalImage"] as? UIImage{
             selectedImage = image
             profileImage.image = image
+        
         }
         dismiss(animated: true, completion: nil)
     }

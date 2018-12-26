@@ -11,6 +11,8 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import Nuke
+
 
 class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
@@ -28,22 +30,40 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         static var usernameDisplayed: String = ""
         static var vibeStatus: Int = 0
         static var photoURL: String = ""
+        static var image = UIView.init()
     }
     
-
+    
+    //    func getProfileImage() -> (UIImage)
+    //    {
+    //        return homeUser.image!
+    //    }
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return FriendSystem.system.friendList.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Sort friend list by alphabetical order
+        FriendSystem.system.friendList.sort{$0.username < $1.username}
+        // Sort friend list by vibe status
+        FriendSystem.system.friendList.sort{$0.vibeStatus > $1.vibeStatus}
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell", for: indexPath) as! FriendsTableViewCell
         // Display username
         cell.friendLabel.text! = FriendSystem.system.friendList[indexPath.row].username
-        // Convert download photoURL to UIimage
+        // Get photo URL
         let URL = NSURL(string: FriendSystem.system.friendList[indexPath.row].photoURL)!
-        let imageData = NSData(contentsOf: URL as URL)!
-        cell.friendProfilePhoto.image = UIImage(data: imageData as Data)
-        // Round prfile images
+        // Nuke
+        Nuke.loadImage(with: URL as URL, into: cell.friendProfilePhoto)
+        
+        
+        // Convert download photoURL to UIimage
+        //        let imageData = NSData(contentsOf: URL as URL)!
+        //        cell.friendProfilePhoto.image = UIImage(data: imageData as Data)
+        
+        
+        // Round profile images
         cell.friendProfilePhoto.layer.cornerRadius = cell.friendProfilePhoto.frame.size.width/2
         cell.friendProfilePhoto.clipsToBounds = true
         cell.friendProfilePhoto.layer.masksToBounds = true
@@ -76,10 +96,13 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1), execute: {
             FriendSystem.system.addFriendObserver{self.friendsTable.reloadData()}
             print("Table values updated")
+            //self.friendsTable.reloadData()
             self.refreshControl.endRefreshing()
         })
     }
-        
+    
+    var slideOutMenu: MenuViewController = MenuViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -90,19 +113,15 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             homeUser.usernameDisplayed = User.username
             homeUser.photoURL = User.photoURL
             print("photoURL: ", homeUser.photoURL)
-            
-    }
+            // Preheat user profile image in menu
+            let imageURL = URL(string: homeUser.photoURL)!
+            let preheater = Nuke.ImagePreheater()
+            preheater.startPreheating(with: [imageURL])
+        }
         // Load friends list with updated content
         FriendSystem.system.addFriendObserver {self.friendsTable.reloadData()}
         // Add refresh control to tableView
         self.friendsTable.addSubview(self.refreshControl)
-    }
-    
-    // Convert profile image url to UIimage
-    func getProfileImage(photoURL: String){
-        let URL = NSURL(string: photoURL)!
-        let imageData = NSData(contentsOf: URL as URL)!
-        //MenuViewController.profileImage.image = UIImage(data: imageData as Data)
     }
     
     // Configure slide out menu functionality
@@ -117,6 +136,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         FriendSystem.system.removeFriendObserver()
         if segue.identifier == "goToAddFriend"{
+            _ = segue.destination as! FriendRequestViewController
             FriendSystem.system.removeFriendObserver()
         }
     }

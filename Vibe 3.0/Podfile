@@ -11,16 +11,19 @@ target 'Vibe' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Storage'
-  
-  target 'VibeTests' do
-      inherit! :search_paths
+  pod 'Nuke', '~> 7.0'
+
+
+  #target 'VibeTests' do
+      #inherit! :search_paths
       # Pods for testing
-  end
-  
-  target 'VibeUITests' do
-      inherit! :search_paths
+  #end
+
+  #target 'VibeUITests' do
+      #inherit! :search_paths
       # Pods for testing
-  end
+  #end
+
 
 
 end
