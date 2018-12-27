@@ -61,7 +61,7 @@ class FriendSystem {
     func getUser(_ userID: String, completion: @escaping (User) -> Void) {
         USER_REF.child(userID).observeSingleEvent(of: DataEventType.value, with: { (snapshot) in
             let email = snapshot.childSnapshot(forPath: "email").value as! String
-            let name = snapshot.childSnapshot(forPath: "email").value as! String
+            let name = snapshot.childSnapshot(forPath: "name").value as! String
             let username = snapshot.childSnapshot(forPath: "username").value as! String
             var vibeStatus = snapshot.childSnapshot(forPath: "vibeStatus").value as? Int ?? 0
             var photoURL = snapshot.childSnapshot(forPath: "profileImageURL").value as! String

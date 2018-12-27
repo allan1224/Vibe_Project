@@ -49,7 +49,10 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         name.text = FriendsViewController.homeUser.nameDisplayed
         username.text = FriendsViewController.homeUser.usernameDisplayed
         let imageURL = URL(string: FriendsViewController.homeUser.photoURL)!
-        Nuke.loadImage(with: imageURL, into: profileImage)
+        // Resize via Nuke
+        var request = ImageRequest(url: imageURL, targetSize: CGSize(width: 125, height: 125), contentMode: .aspectFill)
+        // Load image via Nuke
+        Nuke.loadImage(with: request, into: profileImage )
         let preheater = Nuke.ImagePreheater()
         preheater.stopPreheating(with: [imageURL])
         // Round profile image

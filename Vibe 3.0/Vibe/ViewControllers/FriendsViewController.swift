@@ -50,19 +50,14 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Sort friend list by vibe status
         FriendSystem.system.friendList.sort{$0.vibeStatus > $1.vibeStatus}
         let cell = tableView.dequeueReusableCell(withIdentifier: "friendsCell", for: indexPath) as! FriendsTableViewCell
-        // Display username
-        cell.friendLabel.text! = FriendSystem.system.friendList[indexPath.row].username
+        // Display friends names
+        cell.friendLabel.text! = FriendSystem.system.friendList[indexPath.row].name
         // Get photo URL
-        let URL = NSURL(string: FriendSystem.system.friendList[indexPath.row].photoURL)!
-        // Nuke
-        Nuke.loadImage(with: URL as URL, into: cell.friendProfilePhoto)
-        
-        
-        // Convert download photoURL to UIimage
-        //        let imageData = NSData(contentsOf: URL as URL)!
-        //        cell.friendProfilePhoto.image = UIImage(data: imageData as Data)
-        
-        
+        let imageURL = URL(string: FriendSystem.system.friendList[indexPath.row].photoURL)!
+        // Resize via Nuke
+        var request = ImageRequest(url: imageURL, targetSize: CGSize(width: 65, height: 65), contentMode: .aspectFill)
+        // Load image via Nuke
+        Nuke.loadImage(with: request, into: cell.friendProfilePhoto)
         // Round profile images
         cell.friendProfilePhoto.layer.cornerRadius = cell.friendProfilePhoto.frame.size.width/2
         cell.friendProfilePhoto.clipsToBounds = true

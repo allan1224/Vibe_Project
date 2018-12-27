@@ -35,7 +35,7 @@ class RegisterTwoViewController: UIViewController, UITextFieldDelegate{
     @IBAction func registerButton(_ sender: Any) {
         print("register button pressed")
         
-        if let profilePhoto = self.selectedImage, let imageData = profilePhoto.jpegData(compressionQuality: 0.01){
+        if let profilePhoto = self.selectedImage, let imageData = profilePhoto.jpegData(compressionQuality: 0.2){
             AuthService.signUp(name: name, username: usernameTextField.text!, email: email, password: password, phoneNumber: phoneNumberTextField.text!, vibeStatus: vibeStatus, imageData: imageData, onSuccess: {
                 // Initiate segue after registration is complete
                 self.performSegue(withIdentifier: "RegisterToPageCtl", sender: nil)
@@ -134,7 +134,6 @@ class RegisterTwoViewController: UIViewController, UITextFieldDelegate{
         // Dispose of any resources that can be recreated.
     }
     
-    
     /*
      // MARK: - Navigation
      
@@ -144,9 +143,6 @@ class RegisterTwoViewController: UIViewController, UITextFieldDelegate{
      // Pass the selected object to the new view controller.
      }
      */
-    
-    
-    
 }
 
 
