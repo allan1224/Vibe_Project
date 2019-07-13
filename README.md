@@ -1,2 +1,2 @@
-# Vibe_Prototype
+# Vibe_Project
 most basic prototype for vibe
